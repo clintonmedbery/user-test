@@ -1,0 +1,30 @@
+{
+  "name": "user-test",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "server": "node ./server/bin/www",
+    "dev": "NODE_ENV=development nodemon --exec babel-node --inspect=0.0.0.0:9201 server/bin/www.js"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "sourceMaps": "both"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.8.4",
+    "nodemon": "^2.0.2"
+  }
+}
