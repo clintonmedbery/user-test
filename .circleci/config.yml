@@ -24,7 +24,7 @@ jobs:
   docker-deploy-image:
     working_directory: ~/app
     machine:
-      docker_layer_caching: true # (4)
+      docker_layer_caching: false # (4) NEEDS TO BE TRUE
     steps:
       - checkout
       - run: | # (5)  
