@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "server": "node ./server/bin/www",
-    "dev": "NODE_ENV=development nodemon --exec babel-node --inspect=0.0.0.0:9201 server/bin/www.js"
+    "dev": "NODE_ENV=development nodemon --exec babel-node --inspect=0.0.0.0:9201 server/bin/www.js",
+    "test": "jest"
   },
   "babel": {
     "presets": [
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@babel/node": "^7.8.4",
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2"
   }
 }
