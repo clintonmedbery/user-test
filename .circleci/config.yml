@@ -4,7 +4,7 @@ jobs:
     filters:  # using regex filters requires the entire branch to match
       branches:
         only:  # only branches matching the below regex filters will run
-          - dev
+          - /^dev/
     working_directory: ~/app
     docker:
       - image: circleci/node:latest # (1)
@@ -13,9 +13,6 @@ jobs:
       - run:
           name: "What branch am I on now?"
           command: echo ${CIRCLE_BRANCH}
-      - run:
-          name: "What branch am I on now?"
-          command: "echo $CIRCLE_BRANCH"
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
@@ -35,7 +32,7 @@ jobs:
     filters:  # using regex filters requires the entire branch to match
       branches:
         only:  # only branches matching the below regex filters will run
-          - dev
+          - /^dev/
     working_directory: ~/app
     machine:
       docker_layer_caching: false # (4) NEEDS TO BE TRUE
@@ -49,7 +46,7 @@ jobs:
     filters:  # using regex filters requires the entire branch to match
       branches:
         only:  # only branches matching the below regex filters will run
-          - dev
+          - /^dev/
     working_directory: ~/app
     docker:
       - image: circleci/python:latest
@@ -61,7 +58,11 @@ jobs:
           command: 'sudo pip install awsebcli --upgrade'
       - run: # (7)
           name: Deploying application to Elastic Beanstalk
-          command: eb deploy UserTest-env
+          command: |
+            if [ "$CIRCLE_BRANCH" = "develop" ]; then
+                eb deploy UserTest-env
+            fi
+
 workflows:
   version: 2
   build-test-and-deploy:
