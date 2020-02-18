@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "server": "node ./server/bin/www",
+    "server": "babel-node ./server/bin/www",
     "dev": "NODE_ENV=development nodemon --exec babel-node --inspect=0.0.0.0:9201 server/bin/www.js",
     "test": "jest"
   },
