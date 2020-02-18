@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: "What branch am I on now?"
-          command: echo $CIRCLE_BRANCH
+          command: echo ${CIRCLE_BRANCH}
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
