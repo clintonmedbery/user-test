@@ -1,11 +1,18 @@
 version: 2
 jobs:
   test:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
     working_directory: ~/app
     docker:
       - image: circleci/node:latest # (1)
     steps:
       - checkout
+      - run:
+          name: "What branch am I on now?"
+          command: echo $CIRCLE_BRANCH
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
@@ -22,6 +29,10 @@ jobs:
           name: Run tests # (3)
           command: 'npm run test'
   docker-deploy-image:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
     working_directory: ~/app
     machine:
       docker_layer_caching: false # (4) NEEDS TO BE TRUE
@@ -32,6 +43,10 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push clintomed/user-test
   deploy-aws:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
     working_directory: ~/app
     docker:
       - image: circleci/python:latest
