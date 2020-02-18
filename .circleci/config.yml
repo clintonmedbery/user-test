@@ -1,37 +1,72 @@
-# JavaScript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
-  build:
+  test:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
+    working_directory: ~/app
     docker:
-      # specify the version you desire here
-      - image: circleci/node:jessie
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+      - image: circleci/node:latest # (1)
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: yarn install
-
+      - run:
+          name: "What branch am I on now?"
+          command: echo ${CIRCLE_BRANCH}
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache: # (2)
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install npm dependencies
+          command: npm install
       - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
-      - run: yarn test
+            - ./node_modules
+      - run:
+          name: Run tests # (3)
+          command: 'npm run test'
+  docker-deploy-image:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
+    working_directory: ~/app
+    machine:
+      docker_layer_caching: false # (4) NEEDS TO BE TRUE
+    steps:
+      - checkout
+      - run: | # (5)  
+          docker build -t clintomed/user-test .
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push clintomed/user-test
+  deploy-aws:
+    filters:  # using regex filters requires the entire branch to match
+      branches:
+        only:  # only branches matching the below regex filters will run
+          - dev
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:latest
+    steps:
+      - checkout
+      - run: # (6)
+          name: Installing deployment dependencies
+          working_directory: /
+          command: 'sudo pip install awsebcli --upgrade'
+      - run: # (7)
+          name: Deploying application to Elastic Beanstalk
+          command: eb deploy UserTest-env
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - test
+      - docker-deploy-image:
+          requires:
+            - test
+      - deploy-aws:
+          requires:
+            - docker-deploy-image
