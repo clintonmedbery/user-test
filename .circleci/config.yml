@@ -3,8 +3,7 @@ jobs:
   test:
     filters:  # using regex filters requires the entire branch to match
       branches:
-        only:  # only branches matching the below regex filters will run
-          - dev
+        only: dev
     working_directory: ~/app
     docker:
       - image: circleci/node:latest # (1)
@@ -31,8 +30,7 @@ jobs:
   docker-deploy-image:
     filters:  # using regex filters requires the entire branch to match
       branches:
-        only:  # only branches matching the below regex filters will run
-          - dev
+        only: dev
     working_directory: ~/app
     machine:
       docker_layer_caching: false # (4) NEEDS TO BE TRUE
@@ -45,8 +43,7 @@ jobs:
   deploy-aws:
     filters:  # using regex filters requires the entire branch to match
       branches:
-        only:  # only branches matching the below regex filters will run
-          - dev
+        only: dev
     working_directory: ~/app
     docker:
       - image: circleci/python:latest
@@ -59,7 +56,7 @@ jobs:
       - run: # (7)
           name: Deploying application to Elastic Beanstalk
           command: |
-            if [ "$CIRCLE_BRANCH" = "develop" ]; then
+            if [ "$CIRCLE_BRANCH" = "dev" ]; then
                 eb deploy UserTest-env
             fi
 
