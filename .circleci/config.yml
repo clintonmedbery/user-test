@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.7.1
+  
 jobs:
   test:
     working_directory: ~/app
