@@ -69,11 +69,13 @@ workflows:
           requires:
             - docker-deploy-image
       - aws-ecr/build-and-push-image:
-          region: AWS_DEFAULT_REGION
-          account-url: AWS_ECR_ACCOUNT_URL_ENV_VAR_NAME
-          repo: "${AWS_RESOURCE_NAME_PREFIX_CERTIFICATION_BFF}"
-          tag: "${CIRCLE_WORKFLOW_ID}"
-          attach-workspace: true
+          # region: AWS_DEFAULT_REGION
+          # account-url: AWS_ECR_ACCOUNT_URL_ENV_VAR_NAME
+          # # repo: "${AWS_RESOURCE_NAME_PREFIX_CERTIFICATION_BFF}"
+          # tag: "${CIRCLE_WORKFLOW_ID}"
+          # attach-workspace: true
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1}"
           requires:
             - test
           filters:  # using regex filters requires the entire branch to matchh
