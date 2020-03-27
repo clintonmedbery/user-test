@@ -76,7 +76,7 @@ workflows:
           attach-workspace: true
           requires:
             - test
-          filters:  # using regex filters requires the entire branch to match
+          filters:  # using regex filters requires the entire branch to matchh
             branches:
               only: ecrTest
         
